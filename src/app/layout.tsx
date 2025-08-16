@@ -1,6 +1,7 @@
 import { euclidCircularB } from '~/lib/fonts'
 import type { Metadata } from 'next'
 import './globals.css'
+import Header from '~/components/Header'
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -15,7 +16,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${euclidCircularB.variable} antialiased`}>
-        {children}
+        <Header />
+        <main className="pt-3 pb-7 *:mx-auto *:w-11/12 *:max-w-screen-xl">
+          {children}
+        </main>
       </body>
     </html>
   )

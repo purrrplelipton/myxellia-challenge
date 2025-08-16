@@ -1,6 +1,9 @@
 import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
+  images: {
+    remotePatterns: [new URL('https://images.unsplash.com/**')],
+  },
   webpack(config) {
     const fileLoaderRule = config.module.rules.find(
       (rule: { test?: { test?: (path: string) => boolean } }) =>
