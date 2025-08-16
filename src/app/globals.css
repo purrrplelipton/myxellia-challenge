@@ -1,26 +1,88 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #fbfcfc;
+    --foreground: #191919;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-euclid-circular-b: var(--font-euclid-circular-b);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #040303;
+      --foreground: #e6e6e6;
   }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-euclid-circular-b);
+  }
+  
+  .rdp-root {
+    --rdp-today-color: white !important;
+  
+    @media (prefers-color-scheme: dark) {
+      --rdp-today-color: black !important;
+    }
+  
+    @media (width >=64rem
+  
+      /* 1024px */
+    ) {
+      --rdp-day-width: calc(var(--spacing) * 12) !important;
+      --rdp-day-height: calc(var(--spacing) * 24) !important;
+    }
+  
+    .rdp-months {
+      @apply w-11/12 mx-auto max-w-none block;
+  
+      .rdp-nav {
+        @apply static justify-between h-16 xl:h-20;
+  
+        .rdp-chevron {
+          @apply [--rdp-accent-color:#98a2b3] dark:[--rdp-accent-color:#675d4c];
+        }
+      }
+  
+      .rdp-month {
+        @apply w-full;
+  
+        .rdp-month_caption {
+          @apply xl:h-20 h-16 -mt-16 xl:-mt-20 font-semibold text-white dark:text-black;
+  
+          .rdp-caption_label {
+            @apply mx-auto;
+          }
+        }
+  
+        table,
+        td,
+        th {
+          @apply border border-[#242424] dark:border-[#bdbdbd];
+        }
+  
+        table {
+          @apply font-medium text-xs w-full max-w-full overflow-auto;
+        }
+  
+        .rdp-weeks {
+          .rdp-week {
+            .rdp-day {
+              @apply text-left align-baseline p-1.5;
+  
+              &.rdp-today {
+                @apply text-shadow-[#2525E6] dark:text-shadow-[#dad519] text-shadow-lg font-semibold text-[1.25em];
+              }
+            }
+          }
+        }
+      }
+  
+    }
 }
