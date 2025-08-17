@@ -1,4 +1,5 @@
 import React from 'react'
+import { ArrowThingy } from '~/assets/svgs'
 import { cn, formatPrice } from '~/lib/utils'
 
 export default function CardThing({
@@ -42,14 +43,15 @@ export default function CardThing({
             {title}
           </span>
 
-          <span
-            aria-hidden
-            className="mr-0.75 ml-1 inline-grid size-2.5 place-content-center rounded-full bg-(--accent-color) text-center md:mr-1.5 md:ml-2 md:size-3.5"
-          >
-            <span className="inline-block size-[1em] leading-none text-(--accent-color) invert">
-              {isSame ? <>&ndash;</> : isIncrease ? <>&uarr;</> : <>&darr;</>}
-            </span>
-          </span>
+          <ArrowThingy
+            className={cn(
+              'mr-0.75 ml-1 inline-block w-[1em] text-[0.625rem] text-(--accent-color) md:mr-1.5 md:ml-2 md:text-sm dark:invert',
+              {
+                'rotate-180': !isIncrease && !isSame,
+                'rounded-full bg-(--accent)': isSame,
+              },
+            )}
+          />
 
           <span className="text-(--accent-color) dark:invert">
             {percentChange}&#37;

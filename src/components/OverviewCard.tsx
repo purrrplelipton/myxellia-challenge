@@ -42,7 +42,8 @@ export default function OverviewCard({
             className="ml-auto shrink-0 text-[0.625rem] text-[#4545fe] md:text-xs dark:text-[#baba01]"
             aria-label={`View all ${title}`}
           >
-            View all <span className="text-[1.5em]">&#x3E;</span>
+            View all{' '}
+            <span className="pl-px text-[1.5em] md:pl-0.5">&#x3E;</span>
           </button>
         </div>
       </header>

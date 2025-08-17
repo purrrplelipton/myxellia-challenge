@@ -1,19 +1,180 @@
 'use client'
 
-import React, { useId } from 'react'
+import React from 'react'
 import CardThing from '~/components/CardThing'
 import CarouselCard from '~/components/CarouselCard'
 import { cn } from '~/lib/utils'
 import dynamic from 'next/dynamic'
 import OverviewCard from '~/components/OverviewCard'
-import { Home as Home_SVG, Profile1 } from '~/assets/svgs'
+import { Profile1, SolarHomeLinear } from '~/assets/svgs'
 
 const Chart = dynamic(() => import('~/components/Chart'), {
   ssr: false,
 })
 
+type CarouselItem = {
+  imageSrc: string
+  imageAlt: string
+  title: string
+  description: string
+  action?: React.ReactNode
+}
+
+type CarouselDef = {
+  ariaLabel?: string
+  items: CarouselItem[]
+}
+
+function IconButton({
+  children,
+  className,
+  ...otherProps
+}: React.ButtonHTMLAttributes<HTMLButtonElement>) {
+  return (
+    <button
+      {...{ ...otherProps, type: otherProps.type ?? 'button' }}
+      className={cn('', className)}
+    >
+      {children}
+    </button>
+  )
+}
+
+function CarouselStrip({ carousels }: { carousels: CarouselDef[] }) {
+  const id = React.useId()
+  const carouselWrapRef = React.useRef<HTMLDivElement>(null)
+  const [canScrollLeft, setCanScrollLeft] = React.useState(false)
+  const [canScrollRight, setCanScrollRight] = React.useState(false)
+
+  const updateScrollState = () => {
+    const el = carouselWrapRef.current
+    if (!el) return
+    setCanScrollLeft(el.scrollLeft > 0)
+    setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 1)
+  }
+
+  const scrollCarousel = (dir: 'left' | 'right') => {
+    const el = carouselWrapRef.current
+    if (!el) return
+    const scrollBy = Math.round(el.clientWidth * 0.6)
+    el.scrollBy({
+      left: dir === 'left' ? -scrollBy : scrollBy,
+      behavior: 'smooth',
+    })
+  }
+
+  React.useEffect(() => {
+    const el = carouselWrapRef.current
+    if (!el) return
+    updateScrollState()
+    const onScroll = () => updateScrollState()
+    window.addEventListener('resize', updateScrollState)
+    el.addEventListener('scroll', onScroll)
+    return () => {
+      window.removeEventListener('resize', updateScrollState)
+      el.removeEventListener('scroll', onScroll)
+    }
+  }, [])
+
+  return (
+    <section aria-labelledby="featured-carousels-heading">
+      <h2 id="featured-carousels-heading" className="sr-only">
+        Featured carousels
+      </h2>
+      <div className="grid grid-cols-1 grid-rows-1 items-center *:[grid-area:1/1]">
+        {canScrollLeft && (
+          <IconButton
+            aria-label="Scroll slider left"
+            onClick={() => scrollCarousel('left')}
+            className={cn(
+              canScrollLeft
+                ? ['opacity-40 hover:opacity-100 focus-visible:opacity-100']
+                : ['opacity-0'],
+              'ml-4 grid aspect-square place-content-center justify-self-start rounded-full bg-[#e4e4e4] p-1.5 text-[0.5rem] transition-all duration-200 dark:bg-[#1b1b1b] starting:opacity-0',
+            )}
+          >
+            <span className="inline-block size-[1em] leading-none">
+              &#9664;
+            </span>
+          </IconButton>
+        )}
+        <div
+          ref={carouselWrapRef}
+          className="flex max-w-full gap-4 overflow-auto *:shrink-0"
+          style={{ scrollbarWidth: 'none' }}
+        >
+          {carousels.map((carousel, index) => {
+            const label = carousel.ariaLabel ?? `Featured carousel ${index + 1}`
+            const headingId = `${id}-carousel-${index}-heading`
+            return (
+              <React.Fragment key={`${id}-${index}`}>
+                <h3 id={headingId} className="sr-only">
+                  {label}
+                </h3>
+                <CarouselCard
+                  {...carousel}
+                  ariaLabel={label}
+                  className="aspect-[418/286] w-2/3 max-w-105 overflow-clip rounded-lg md:rounded-xl"
+                />
+              </React.Fragment>
+            )
+          })}
+        </div>
+        {canScrollRight && (
+          <IconButton
+            aria-label="Scroll slider right"
+            onClick={() => scrollCarousel('right')}
+            className={cn(
+              canScrollRight
+                ? ['opacity-40 hover:opacity-100 focus-visible:opacity-100']
+                : ['opacity-0'],
+              'mr-4 grid aspect-square place-content-center justify-self-end rounded-full bg-[#e4e4e4] p-1.5 text-[0.5rem] transition-all duration-200 dark:bg-[#1b1b1b] starting:opacity-0',
+            )}
+          >
+            <span className="inline-block size-[1em] leading-none">
+              &#9658;
+            </span>
+          </IconButton>
+        )}
+      </div>
+    </section>
+  )
+}
+
 export default function Home() {
-  const id = useId()
+  const chartWrapRef = React.useRef<HTMLDivElement>(null)
+  const [canChartScrollLeft, setCanChartScrollLeft] = React.useState(false)
+  const [canChartScrollRight, setCanChartScrollRight] = React.useState(false)
+
+  const updateChartScrollState = () => {
+    const el = chartWrapRef.current
+    if (!el) return
+    setCanChartScrollLeft(el.scrollLeft > 0)
+    setCanChartScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 1)
+  }
+
+  const scrollChart = (dir: 'left' | 'right') => {
+    const el = chartWrapRef.current
+    if (!el) return
+    const scrollBy = Math.round(el.clientWidth * 0.6)
+    el.scrollBy({
+      left: dir === 'left' ? -scrollBy : scrollBy,
+      behavior: 'smooth',
+    })
+  }
+
+  React.useEffect(() => {
+    const el = chartWrapRef.current
+    if (!el) return
+    updateChartScrollState()
+    const onScroll = () => updateChartScrollState()
+    window.addEventListener('resize', updateChartScrollState)
+    el.addEventListener('scroll', onScroll)
+    return () => {
+      window.removeEventListener('resize', updateChartScrollState)
+      el.removeEventListener('scroll', onScroll)
+    }
+  }, [])
 
   return (
     <React.Fragment>
@@ -69,28 +230,51 @@ export default function Home() {
               </fieldset>
             </div>
             <div className="mx-auto grid w-11/12 grid-cols-1 gap-3 lg:grid-cols-7">
-              <div className="grid grid-cols-[auto_1fr_auto] items-center gap-2.5 lg:col-span-4">
-                <button
-                  type="button"
-                  className="grid aspect-square place-content-center rounded-full bg-[#e4e4e4] p-1.5 text-[0.5rem] opacity-40 dark:bg-[#1b1b1b]"
-                  aria-label="Scroll chart left"
+              <div className="grid grid-cols-1 grid-rows-1 items-center *:[grid-area:1/1] lg:col-span-4">
+                {canChartScrollLeft && (
+                  <IconButton
+                    aria-label="Scroll chart right"
+                    aria-disabled={!canChartScrollLeft}
+                    onClick={() => canChartScrollLeft && scrollChart('left')}
+                    className={cn(
+                      canChartScrollLeft
+                        ? [
+                            'opacity-40 hover:opacity-100 focus-visible:opacity-100',
+                          ]
+                        : ['opacity-0'],
+                      'mr-4 grid aspect-square place-content-center justify-self-end rounded-full bg-[#e4e4e4] p-1.5 text-[0.5rem] transition-all duration-200 dark:bg-[#1b1b1b] starting:opacity-0',
+                    )}
+                  >
+                    <span className="inline-block size-[1em] leading-none">
+                      &#9664;
+                    </span>
+                  </IconButton>
+                )}
+                <div
+                  ref={chartWrapRef}
+                  className="h-40 max-w-full overflow-auto"
                 >
-                  <span className="inline-block size-[1em] leading-none">
-                    &#9664;
-                  </span>
-                </button>
-                <div className="h-40 max-w-full overflow-auto">
                   <Chart className="" />
                 </div>
-                <button
-                  type="button"
-                  className="grid aspect-square place-content-center rounded-full bg-[#e4e4e4] p-1.5 text-[0.5rem] opacity-40 dark:bg-[#1b1b1b]"
-                  aria-label="Scroll chart right"
-                >
-                  <span className="inline-block size-[1em] leading-none">
-                    &#9658;
-                  </span>
-                </button>
+                {canChartScrollRight && (
+                  <IconButton
+                    aria-label="Scroll chart right"
+                    aria-disabled={!canChartScrollRight}
+                    onClick={() => canChartScrollRight && scrollChart('right')}
+                    className={cn(
+                      canChartScrollRight
+                        ? [
+                            'opacity-40 hover:opacity-100 focus-visible:opacity-100',
+                          ]
+                        : ['opacity-0'],
+                      'mr-4 grid aspect-square place-content-center justify-self-end rounded-full bg-[#e4e4e4] p-1.5 text-[0.5rem] transition-all duration-200 dark:bg-[#1b1b1b] starting:opacity-0',
+                    )}
+                  >
+                    <span className="inline-block size-[1em] leading-none">
+                      &#9658;
+                    </span>
+                  </IconButton>
+                )}
               </div>
               <div
                 className={cn(
@@ -135,7 +319,7 @@ export default function Home() {
               { label: 'Active', value: 80 },
               { label: 'Archived', value: 1_000 },
             ]}
-            icon={<Home_SVG />}
+            icon={<SolarHomeLinear />}
           />
           <OverviewCard
             title="Users Overview"
@@ -149,53 +333,7 @@ export default function Home() {
           />
         </div>
       </section>
-      <section aria-labelledby="featured-carousels-heading">
-        <h2 id="featured-carousels-heading" className="sr-only">
-          Featured carousels
-        </h2>
-        <div className="grid grid-cols-1 grid-rows-1 items-center *:[grid-area:1/1]">
-          <button
-            type="button"
-            className="ml-4 grid aspect-square place-content-center justify-self-start rounded-full bg-[#e4e4e4] p-1.5 text-[0.5rem] opacity-40 dark:bg-[#1b1b1b]"
-            aria-label="Scroll slider left"
-          >
-            <span className="inline-block size-[1em] leading-none">
-              &#9664;
-            </span>
-          </button>
-          <div
-            className="flex max-w-full gap-4 overflow-auto *:shrink-0"
-            style={{ scrollbarWidth: 'none' }}
-          >
-            {carousels.map((carousel, index) => {
-              const label =
-                carousel.ariaLabel ?? `Featured carousel ${index + 1}`
-              const headingId = `${id}-carousel-${index}-heading`
-              return (
-                <React.Fragment key={`${id}-${index}`}>
-                  <h3 id={headingId} className="sr-only">
-                    {label}
-                  </h3>
-                  <CarouselCard
-                    {...carousel}
-                    ariaLabel={label}
-                    className="aspect-[418/286] w-2/3 max-w-105 overflow-clip rounded-lg md:rounded-xl"
-                  />
-                </React.Fragment>
-              )
-            })}
-          </div>
-          <button
-            type="button"
-            className="mr-4 grid aspect-square place-content-center justify-self-end rounded-full bg-[#e4e4e4] p-1.5 text-[0.5rem] opacity-40 dark:bg-[#1b1b1b]"
-            aria-label="Scroll slider right"
-          >
-            <span className="inline-block size-[1em] leading-none">
-              &#9658;
-            </span>
-          </button>
-        </div>
-      </section>
+      <CarouselStrip carousels={carousels} />
     </React.Fragment>
   )
 }
@@ -221,7 +359,7 @@ const carousels = [
       },
       {
         imageSrc:
-          'https://images.unsplash.com/photo-1507525428034-b723a996f329',
+          'https://images.unsplash.com/photo-1519046904884-53103b34b206',
         imageAlt: 'A beautiful beach with golden sand and turquoise water.',
         title: 'Sunny Beaches',
         description: 'Relax and unwind on pristine sandy shores.',
@@ -233,7 +371,7 @@ const carousels = [
     items: [
       {
         imageSrc:
-          'https://images.unsplash.com/photo-1480714378408-67cf0d136b15',
+          'https://images.unsplash.com/photo-1477959858617-67f85cf4f1df',
         imageAlt: 'A stunning skyline of a modern metropolis at night.',
         title: 'City Skylines',
         description: 'Explore the vibrant and dynamic life of the city.',
@@ -259,7 +397,7 @@ const carousels = [
       },
       {
         imageSrc:
-          'https://images.unsplash.com/photo-1580959375461-b62e8a0ee24b',
+          'https://images.unsplash.com/photo-1579584425555-c3ce17fd4351',
         imageAlt: 'A colorful platter of fresh sushi rolls.',
         title: 'Fresh Sushi',
         description: 'Savor the authentic taste of Japanese cuisine.',
