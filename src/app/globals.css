@@ -2,10 +2,15 @@
 
 * {
   interpolate-size: allow-keywords;
+  scrollbar-width: thin;
+}
+button:not(:disabled, [aria-disabled="true"]),
+label:has(input:not(:disabled, [aria-disabled="true"])) {
+  @apply hover:cursor-pointer;
 }
 :root {
   --background: #fbfcfc;
-    --foreground: #191919;
+  --foreground: #191919;
     height: 100%;
 }
 
@@ -18,7 +23,7 @@
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #040303;
-      --foreground: #e6e6e6;
+    --foreground: #e6e6e6;
   }
 }
 
@@ -27,7 +32,7 @@ body {
   color: var(--foreground);
   font-family: var(--font-euclid-circular-b);
   height: 100%;
-    min-height: 100%;
+  min-height: 100%;
   }
   
   .rdp-root {
@@ -37,58 +42,52 @@ body {
       --rdp-today-color: black !important;
     }
   
-    @media (width >=64rem
-  
-      /* 1024px */
-    ) {
-      --rdp-day-width: calc(var(--spacing) * 12) !important;
-      --rdp-day-height: calc(var(--spacing) * 24) !important;
-    }
-  
-    .rdp-months {
-      @apply w-11/12 mx-auto max-w-none block;
-  
+        @media (width >=64rem
+ /* 1024px */
+ ) {
+   --rdp-day-width: calc(var(--spacing) * 12) !important;
+   --rdp-day-height: calc(var(--spacing) * 24) !important;
+ }
+
+ .rdp-months {
+    @apply mx-auto block w-11/12 max-w-none;
       .rdp-nav {
-        @apply static justify-between h-16 xl:h-20;
-  
+      @apply static h-16 justify-between xl:h-20;
         .rdp-chevron {
           @apply [--rdp-accent-color:#98a2b3] dark:[--rdp-accent-color:#675d4c];
         }
       }
-  
+      
       .rdp-month {
         @apply w-full;
-  
+      
         .rdp-month_caption {
-          @apply xl:h-20 h-16 -mt-16 xl:-mt-20 font-semibold text-white dark:text-black;
-  
+        @apply -mt-16 h-16 font-semibold text-white xl:-mt-20 xl:h-20 dark:text-black;
           .rdp-caption_label {
             @apply mx-auto;
           }
         }
-  
+        
         table,
         td,
         th {
           @apply border border-[#242424] dark:border-[#bdbdbd];
         }
-  
+        
         table {
-          @apply font-medium text-xs w-full max-w-full overflow-auto;
+        @apply w-full max-w-full overflow-auto text-xs font-medium;
         }
-  
+        
         .rdp-weeks {
           .rdp-week {
             .rdp-day {
-              @apply text-left align-baseline p-1.5;
-  
+            @apply p-1.5 text-left align-baseline;
               &.rdp-today {
-                @apply text-shadow-[#2525E6] dark:text-shadow-[#dad519] text-shadow-lg font-semibold text-[1.25em];
+              @apply text-[1.25em] font-semibold text-shadow-[#2525E6] text-shadow-lg dark:text-shadow-[#dad519];
               }
-            }
-          }
-        }
-      }
-  
+                            }
+                            }
+                            }
+                            }
     }
 }

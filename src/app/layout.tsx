@@ -17,7 +17,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${euclidCircularB.variable} antialiased`}>
         <Header />
-        <main className="pt-3 pb-7 *:mx-auto *:w-11/12 *:max-w-screen-xl">
+        <main className="pt-3 pb-7 *:mx-auto *:w-11/12 *:max-w-screen-2xl">
           {children}
         </main>
       </body>

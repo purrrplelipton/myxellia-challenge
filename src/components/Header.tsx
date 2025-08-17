@@ -25,7 +25,7 @@ export default function Header() {
   return (
     <header>
       <div className="bg-foreground text-white dark:text-black">
-        <div className="mx-auto flex h-16 w-11/12 max-w-screen-xl items-center xl:h-20">
+        <div className="mx-auto flex h-16 w-11/12 max-w-screen-2xl items-center xl:h-20">
           <button
             type="button"
             className="flex h-5 items-center gap-1 *:h-full *:w-auto xl:h-7 xl:gap-1.5"
@@ -47,7 +47,7 @@ export default function Header() {
         </div>
       </div>
       <div className="bg-white text-[#3d3d3d] shadow-xs shadow-[#f4f4f5] dark:bg-black dark:text-[#c2c2c2] dark:shadow-[#0b0b0a]">
-        <div className="mx-auto w-11/12 max-w-screen-xl items-center space-y-3 py-3 md:flex md:h-17 md:space-y-0">
+        <div className="mx-auto w-11/12 max-w-screen-2xl items-center space-y-3 py-3 md:flex md:h-17 md:space-y-0">
           <nav className="flex w-full max-w-full items-center overflow-auto xl:gap-5">
             {navItems.map((item) => (
               <button
@@ -72,7 +72,7 @@ export default function Header() {
               placeholder="Search listings, users, and more"
               className="min-w-0 truncate rounded-xl border border-[#e4e4e4] bg-[#f5f5f5] py-2.5 pr-4 pl-12 dark:border-[#1b1b1b] dark:bg-[#0a0a0a]"
             />
-            <Search1 className="ml-4 w-[2em] justify-self-start" />
+            <Search1 className="pointer-events-none ml-4 w-[2em] justify-self-start select-none" />
           </div>
         </div>
       </div>

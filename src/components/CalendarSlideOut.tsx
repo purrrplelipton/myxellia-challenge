@@ -7,7 +7,7 @@ import { DayPicker } from 'react-day-picker'
 import 'react-day-picker/style.css'
 import { withViewTransition } from '~/lib/utils'
 
-export default function CalendarSlideOut() {
+export default React.memo(function CalendarSlideOut() {
   const [showSlideOut, setShowSlideOut] = React.useState(false)
   const [mounted, setMounted] = React.useState(false)
   const slideOutRef = React.useRef<HTMLDivElement>(null)
@@ -58,4 +58,4 @@ export default function CalendarSlideOut() {
         )}
     </React.Fragment>
   )
-}
+})
