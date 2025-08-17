@@ -8,22 +8,20 @@ import {
   BarElement,
   Tooltip,
   Legend,
+  type TooltipItem,
 } from 'chart.js'
 import { Bar } from 'react-chartjs-2'
-import { cn, fmtMillions, formatPrice } from '~/lib/utils'
+import { cn, formatNumber, formatPrice } from '~/lib/utils'
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend)
 
-// explicit key and data types so we can index safely
 type Key = 'seriesA' | 'seriesB' | 'seriesC'
-type DataPoint = {
-  month: string
-  seriesA: number
-  seriesB: number
-  seriesC: number
-}
 
-export default React.memo(function ({ className }: { className?: string }) {
+export default React.memo(function Chart({
+  className,
+}: {
+  className?: string
+}) {
   const labels = data.map((d) => String(d.month))
   const chartData = {
     labels,
@@ -42,7 +40,7 @@ export default React.memo(function ({ className }: { className?: string }) {
       legend: { display: false },
       tooltip: {
         callbacks: {
-          label: (ctx: any) => {
+          label: (ctx: TooltipItem<'bar'>) => {
             const v = Number(ctx.raw ?? 0)
             return `${String(ctx.dataset.label ?? '')}: ${formatPrice(v, { showCurrencySymbol: false })}`
           },
@@ -74,7 +72,7 @@ export default React.memo(function ({ className }: { className?: string }) {
             weight: 400,
           },
           color: '#919191',
-          callback: (value: number | string) => fmtMillions(Number(value)),
+          callback: (value: number | string) => formatNumber(Number(value)),
           maxTicksLimit: 6,
         },
       },

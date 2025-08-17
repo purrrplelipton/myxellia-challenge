@@ -5,6 +5,8 @@ import CardThing from '~/components/CardThing'
 import CarouselCard from '~/components/CarouselCard'
 import { cn } from '~/lib/utils'
 import dynamic from 'next/dynamic'
+import OverviewCard from '~/components/OverviewCard'
+import { Home as Home_SVG, Profile1 } from '~/assets/svgs'
 
 const Chart = dynamic(() => import('~/components/Chart'), {
   ssr: false,
@@ -20,8 +22,8 @@ export default function Home() {
           Welcome, <span>Emmanuel</span>
         </h1>
       </header>
-      <section className="mt-4 mb-5">
-        <div className="space-y-2.25 rounded-lg border border-[#e4e4e4] bg-white py-4 md:space-y-4.5 lg:rounded-2xl dark:border-[#1b1b1b] dark:bg-black">
+      <section className="mt-4 mb-5 grid grid-cols-1 gap-5 lg:grid-cols-3 2xl:grid-cols-9">
+        <div className="space-y-2.25 rounded-lg border border-[#e4e4e4] bg-white py-4 md:space-y-4.5 lg:col-span-2 lg:rounded-2xl 2xl:col-span-7 dark:border-[#1b1b1b] dark:bg-black">
           <div className="mx-auto flex w-11/12 items-center text-[0.625rem] md:text-xs">
             <div className="space-y-1.5 md:space-y-3">
               <h2 className="text-base font-semibold md:text-xl">
@@ -70,8 +72,8 @@ export default function Home() {
               <div className="grid grid-cols-[auto_1fr_auto] items-center gap-2.5 lg:col-span-4">
                 <button
                   type="button"
-                  className="grid aspect-square place-content-center rounded-full bg-[#e4e4e4] p-1.5 text-[0.5rem] dark:bg-[#1b1b1b]"
-                  aria-label="Previous"
+                  className="grid aspect-square place-content-center rounded-full bg-[#e4e4e4] p-1.5 text-[0.5rem] opacity-40 dark:bg-[#1b1b1b]"
+                  aria-label="Scroll chart left"
                 >
                   <span className="inline-block size-[1em] leading-none">
                     &#9664;
@@ -82,8 +84,8 @@ export default function Home() {
                 </div>
                 <button
                   type="button"
-                  className="grid aspect-square place-content-center rounded-full bg-[#e4e4e4] p-1.5 text-[0.5rem] dark:bg-[#1b1b1b]"
-                  aria-label="Next"
+                  className="grid aspect-square place-content-center rounded-full bg-[#e4e4e4] p-1.5 text-[0.5rem] opacity-40 dark:bg-[#1b1b1b]"
+                  aria-label="Scroll chart right"
                 >
                   <span className="inline-block size-[1em] leading-none">
                     &#9658;
@@ -124,27 +126,75 @@ export default function Home() {
             </div>
           </div>
         </div>
+        <div className="grid grid-cols-2 gap-2 md:gap-5 lg:col-span-full lg:col-start-3 lg:grid-cols-1 lg:grid-rows-2 2xl:col-start-8">
+          <OverviewCard
+            title="Listings Overview"
+            titleId="listings-overview"
+            metrics={[
+              { label: 'Total', value: 1_800 },
+              { label: 'Active', value: 80 },
+              { label: 'Archived', value: 1_000 },
+            ]}
+            icon={<Home_SVG />}
+          />
+          <OverviewCard
+            title="Users Overview"
+            titleId="users-overview"
+            metrics={[
+              { label: 'Total', value: 20_700 },
+              { label: 'Riders', value: 8_500 },
+              { label: 'Subscribers', value: 7_500 },
+            ]}
+            icon={<Profile1 />}
+          />
+        </div>
       </section>
-      <section
-        className="flex max-w-full gap-4 overflow-auto *:shrink-0"
-        aria-labelledby="featured-carousels-heading"
-      >
+      <section aria-labelledby="featured-carousels-heading">
         <h2 id="featured-carousels-heading" className="sr-only">
           Featured carousels
         </h2>
-        {carousels.map((carousel, index) => (
-          <React.Fragment key={`${id}-${index}`}>
-            <h3 className="sr-only">
-              {carousel.items?.[0]?.title
-                ? `${carousel.items[0].title} carousel`
-                : `Carousel ${index + 1}`}
-            </h3>
-            <CarouselCard
-              {...carousel}
-              className="aspect-[418/286] w-2/3 max-w-105 overflow-clip rounded-lg md:rounded-xl"
-            />
-          </React.Fragment>
-        ))}
+        <div className="grid grid-cols-1 grid-rows-1 items-center *:[grid-area:1/1]">
+          <button
+            type="button"
+            className="ml-4 grid aspect-square place-content-center justify-self-start rounded-full bg-[#e4e4e4] p-1.5 text-[0.5rem] opacity-40 dark:bg-[#1b1b1b]"
+            aria-label="Scroll slider left"
+          >
+            <span className="inline-block size-[1em] leading-none">
+              &#9664;
+            </span>
+          </button>
+          <div
+            className="flex max-w-full gap-4 overflow-auto *:shrink-0"
+            style={{ scrollbarWidth: 'none' }}
+          >
+            {carousels.map((carousel, index) => {
+              const label =
+                carousel.ariaLabel ?? `Featured carousel ${index + 1}`
+              const headingId = `${id}-carousel-${index}-heading`
+              return (
+                <React.Fragment key={`${id}-${index}`}>
+                  <h3 id={headingId} className="sr-only">
+                    {label}
+                  </h3>
+                  <CarouselCard
+                    {...carousel}
+                    ariaLabel={label}
+                    className="aspect-[418/286] w-2/3 max-w-105 overflow-clip rounded-lg md:rounded-xl"
+                  />
+                </React.Fragment>
+              )
+            })}
+          </div>
+          <button
+            type="button"
+            className="mr-4 grid aspect-square place-content-center justify-self-end rounded-full bg-[#e4e4e4] p-1.5 text-[0.5rem] opacity-40 dark:bg-[#1b1b1b]"
+            aria-label="Scroll slider right"
+          >
+            <span className="inline-block size-[1em] leading-none">
+              &#9658;
+            </span>
+          </button>
+        </div>
       </section>
     </React.Fragment>
   )

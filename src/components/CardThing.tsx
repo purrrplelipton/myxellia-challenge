@@ -28,7 +28,7 @@ export default function CardThing({
     >
       <div className="mx-auto w-5/6 space-y-1 text-[0.5rem] font-medium md:space-y-2 md:text-[0.625rem]">
         <p className="font-semibold md:text-xl" aria-live="polite">
-          <span style={{ color: 'var(--accent-color)' }} aria-hidden>
+          <span className="text-(--accent-color) dark:invert" aria-hidden>
             {formatPrice(value)}
           </span>
           <span className="sr-only">{formatPrice(value)}</span>

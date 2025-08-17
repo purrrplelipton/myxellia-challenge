@@ -82,7 +82,11 @@ export function formatPrice(
   }
 }
 
-export function fmtMillions(n: number) {
-  const m = n / 1_000_000
-  return (Math.abs(m) < 10 ? Math.round(m * 10) / 10 : Math.round(m)) + 'm'
+export function formatNumber(n: number) {
+  if (n >= 1_000_000_000)
+    return `${+(n / 1_000_000_000).toFixed(n % 1_000_000_000 ? 1 : 0)}b`
+  if (n >= 1_000_000)
+    return `${+(n / 1_000_000).toFixed(n % 1_000_000 ? 1 : 0)}m`
+  if (n >= 1_000) return `${+(n / 1_000).toFixed(n % 1_000 ? 1 : 0)}k`
+  return n.toString()
 }
