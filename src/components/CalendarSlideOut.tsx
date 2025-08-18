@@ -6,6 +6,7 @@ import { Calendar } from '~/assets/svgs'
 import { DayPicker } from 'react-day-picker'
 import 'react-day-picker/style.css'
 import { withViewTransition } from '~/lib/utils'
+import Tooltip from './Tooltip'
 
 export default React.memo(function CalendarSlideOut() {
   const [showSlideOut, setShowSlideOut] = React.useState(false)
@@ -34,12 +35,14 @@ export default React.memo(function CalendarSlideOut() {
 
   return (
     <React.Fragment>
-      <button
-        type="button"
-        onClick={() => withViewTransition(() => setShowSlideOut(true))}
-      >
-        <Calendar className="w-[1em]" />
-      </button>
+      <Tooltip content="Calendar" placement="bottom">
+        <button
+          type="button"
+          onClick={() => withViewTransition(() => setShowSlideOut(true))}
+        >
+          <Calendar className="w-[1em]" />
+        </button>
+      </Tooltip>
       {mounted &&
         createPortal(
           <React.Fragment>

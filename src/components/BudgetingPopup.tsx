@@ -6,6 +6,7 @@ import { createPortal } from 'react-dom'
 import { budgeting } from '~/assets/images'
 import { AlignBottom, Calculator, Setting4, TrendUp } from '~/assets/svgs'
 import { withViewTransition } from '~/lib/utils'
+import Tooltip from './Tooltip'
 
 export default function BudgetingPopup() {
   const [showPopup, setShowPopup] = React.useState(false)
@@ -34,12 +35,14 @@ export default function BudgetingPopup() {
 
   return (
     <React.Fragment>
-      <button
-        type="button"
-        onClick={() => withViewTransition(() => setShowPopup(true))}
-      >
-        <Calculator className="w-[1em]" />
-      </button>
+      <Tooltip content="Budgeting" placement="bottom">
+        <button
+          type="button"
+          onClick={() => withViewTransition(() => setShowPopup(true))}
+        >
+          <Calculator className="w-[1em]" />
+        </button>
+      </Tooltip>
       {mounted &&
         createPortal(
           <React.Fragment>
@@ -75,6 +78,9 @@ export default function BudgetingPopup() {
                     ))}
                     <button
                       type="button"
+                      onClick={() =>
+                        withViewTransition(() => setShowPopup(false))
+                      }
                       className="bg-foreground text-background block w-full rounded-full py-3 leading-snug font-medium"
                     >
                       Create Budget
@@ -84,7 +90,6 @@ export default function BudgetingPopup() {
               </div>
             )}
           </React.Fragment>,
-          // safe because we only render the portal on the client
           document.body,
         )}
     </React.Fragment>

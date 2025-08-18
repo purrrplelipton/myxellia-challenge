@@ -27,7 +27,7 @@ export default function CardThing({
       className={cn('rounded-lg p-3', className)}
       aria-labelledby={`cardthing-${title.replace(/\s+/g, '-').toLowerCase()}`}
     >
-      <div className="mx-auto w-5/6 space-y-1 text-[0.5rem] font-medium md:space-y-2 md:text-[0.625rem]">
+      <div className="mx-auto w-11/12 space-y-1 text-[0.5rem] font-medium md:space-y-2 md:text-[0.625rem]">
         <p className="font-semibold md:text-xl" aria-live="polite">
           <span className="text-(--accent-color) dark:invert" aria-hidden>
             {formatPrice(value)}

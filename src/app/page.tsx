@@ -7,6 +7,7 @@ import { cn } from '~/lib/utils'
 import dynamic from 'next/dynamic'
 import OverviewCard from '~/components/OverviewCard'
 import { Profile1, SolarHomeLinear } from '~/assets/svgs'
+import IconButton from '~/components/IconButton'
 
 const Chart = dynamic(() => import('~/components/Chart'), {
   ssr: false,
@@ -23,21 +24,6 @@ type CarouselItem = {
 type CarouselDef = {
   ariaLabel?: string
   items: CarouselItem[]
-}
-
-function IconButton({
-  children,
-  className,
-  ...otherProps
-}: React.ButtonHTMLAttributes<HTMLButtonElement>) {
-  return (
-    <button
-      {...{ ...otherProps, type: otherProps.type ?? 'button' }}
-      className={cn('', className)}
-    >
-      {children}
-    </button>
-  )
 }
 
 function CarouselStrip({ carousels }: { carousels: CarouselDef[] }) {
