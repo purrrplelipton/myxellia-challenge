@@ -11,6 +11,7 @@ export default React.memo(function CarouselCard({
   const count = items?.length ?? 0
   const [index, setIndex] = React.useState(0)
   const [isInteracting, setIsInteracting] = React.useState(false)
+  const [isVisible, setIsVisible] = React.useState(false)
   const interactTimerRef = React.useRef<number>(null)
   const autoplayRef = React.useRef<number>(null)
   const containerRef = React.useRef<HTMLDivElement>(null)
@@ -37,16 +38,34 @@ export default React.memo(function CarouselCard({
   }
 
   React.useEffect(() => {
+    const container = containerRef.current
+    if (!container) return
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsVisible(entry.isIntersecting),
+      { threshold: 0.1 },
+    )
+
+    observer.observe(container)
+
+    return () => {
+      observer.unobserve(container)
+    }
+  }, [])
+
+  React.useEffect(() => {
     // autoplay effect
     if (count <= 1) return
 
-    const tick = () => setIndex((i) => (i + 1) % count)
+    const tick = () =>
+      withViewTransition(() => setIndex((i) => (i + 1) % count))
 
     const startAutoplay = () => {
-      if (autoplayRef.current) return
-      autoplayRef.current = window.setInterval(() => {
-        if (!isInteracting) tick()
-      }, interval)
+      if (autoplayRef.current) {
+        window.clearInterval(autoplayRef.current)
+      }
+      if (!isVisible || isInteracting) return
+      autoplayRef.current = window.setInterval(tick, interval)
     }
 
     const stopAutoplay = () => {
@@ -56,12 +75,17 @@ export default React.memo(function CarouselCard({
       }
     }
 
-    startAutoplay()
+    if (isVisible && !isInteracting) {
+      startAutoplay()
+    } else {
+      stopAutoplay()
+    }
+
     return () => {
       stopAutoplay()
       clearInteractTimer()
     }
-  }, [count, interval, isInteracting, resumeAfter])
+  }, [count, interval, isInteracting, isVisible])
 
   const onTouchStart = (e: React.TouchEvent) => {
     handleInteraction()

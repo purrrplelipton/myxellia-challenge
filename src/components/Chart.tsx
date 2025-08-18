@@ -8,7 +8,8 @@ import {
   BarElement,
   Tooltip,
   Legend,
-  type TooltipItem,
+  type ChartOptions,
+  type ChartData,
 } from 'chart.js'
 import { Bar } from 'react-chartjs-2'
 import { cn, formatNumber, formatPrice } from '~/lib/utils'
@@ -23,24 +24,26 @@ export default React.memo(function Chart({
   className?: string
 }) {
   const labels = data.map((d) => String(d.month))
-  const chartData = {
+  const chartData: ChartData<'bar'> = {
     labels,
     datasets: (keys as Key[]).map((k, i) => ({
       label: k,
       data: data.map((d) => Number(d[k] ?? 0)),
       backgroundColor: colors[i % colors.length],
-      barThickness: 4,
+      barPercentage: 4 / 7,
+      categoryPercentage: 0.625,
+      maxBarThickness: 4,
     })),
   }
 
-  const options = {
+  const options: ChartOptions<'bar'> = {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
       legend: { display: false },
       tooltip: {
         callbacks: {
-          label: (ctx: TooltipItem<'bar'>) => {
+          label: (ctx) => {
             const v = Number(ctx.raw ?? 0)
             return `${String(ctx.dataset.label ?? '')}: ${formatPrice(v, { showCurrencySymbol: false })}`
           },
@@ -51,7 +54,9 @@ export default React.memo(function Chart({
       x: {
         stacked: false,
         grid: { display: false },
+        border: { display: false },
         ticks: {
+          padding: -1,
           font: {
             size: 10,
             family: 'var(--font-euclid-circular-b)',
@@ -64,7 +69,11 @@ export default React.memo(function Chart({
       },
       y: {
         beginAtZero: true,
-        grid: { color: '#e4e4e4' },
+        grid: { display: false },
+        border: {
+          color: '#e4e4e4',
+          width: 1,
+        },
         ticks: {
           font: {
             size: 10,

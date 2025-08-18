@@ -418,4 +418,46 @@ const carousels = [
       },
     ],
   },
+  {
+    ariaLabel: 'Wildlife wonders carousel',
+    items: [
+      {
+        imageSrc:
+          'https://images.unsplash.com/photo-1720309911923-a5423123147e',
+        imageAlt: 'A majestic lion with a golden mane looking to the side.',
+        title: 'King of the Savanna',
+        description: 'Witness the power and grace of wild lions.',
+      },
+      {
+        imageSrc: 'https://images.unsplash.com/photo-1557050543-4d5f4e07ef46',
+        imageAlt: 'An adult elephant walking through a grassy field.',
+        title: 'Gentle Giants',
+        description: 'Discover the intelligence and beauty of elephants.',
+      },
+      {
+        imageSrc: 'https://images.unsplash.com/photo-1552728089-57bdde30beb3',
+        imageAlt: 'A colorful toucan with a large yellow beak on a branch.',
+        title: 'Tropical Birds',
+        description: 'Explore the vibrant colors of the rainforest canopy.',
+      },
+    ],
+  },
+  {
+    ariaLabel: 'Modern technology carousel',
+    items: [
+      {
+        imageSrc:
+          'https://images.unsplash.com/photo-1518770660439-4636190af475',
+        imageAlt: 'A close-up of a computer motherboard and its circuits.',
+        title: 'Complex Circuits',
+        description: 'The intricate beauty of modern hardware.',
+      },
+      {
+        imageSrc: 'https://images.unsplash.com/photo-1550439062-609e1531270e',
+        imageAlt: 'A laptop screen showing lines of programming code.',
+        title: 'Lines of Code',
+        description: 'Building the future one function at a time.',
+      },
+    ],
+  },
 ]
