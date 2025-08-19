@@ -12,7 +12,7 @@ export default function OverviewCard({
   return (
     <section
       className={cn(
-        'space-y-2.5 rounded-2xl border border-[#e4e4e4] bg-white pb-2 md:space-y-5 md:pb-4 dark:border-[#1b1b1b] dark:bg-black',
+        'space-y-2.5 rounded-lg border border-[#e4e4e4] bg-white pb-2 md:space-y-5 md:pb-4 lg:rounded-2xl dark:border-[#1b1b1b] dark:bg-black',
         className,
       )}
       role="region"
@@ -48,13 +48,13 @@ export default function OverviewCard({
         </div>
       </header>
 
-      <div className="mx-auto flex w-5/6 gap-4.5 *:grow md:gap-9">
+      <div className="@container/metrics-container mx-auto flex w-5/6 gap-4.5 *:grow md:gap-9">
         {metrics.map((m, i) => (
           <dl
             key={i}
-            className="space-y-1 text-lg font-semibold text-[#141414] md:space-y-2 md:text-2xl dark:text-[#ebebeb]"
+            className="space-y-1 font-semibold text-[#141414] md:space-y-2 @3xs/metrics-container:text-2xl dark:text-[#ebebeb]"
           >
-            <dt className="text-xs text-[#525252] md:text-sm dark:text-[#adadad]">
+            <dt className="text-[0.4375em] text-[#525252] dark:text-[#adadad]">
               {m.label}
             </dt>
             <dd>{formatNumber(m.value)}</dd>

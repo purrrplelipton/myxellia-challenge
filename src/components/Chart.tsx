@@ -12,18 +12,71 @@ import {
   type ChartData,
 } from 'chart.js'
 import { Bar } from 'react-chartjs-2'
-import { cn, formatNumber, formatPrice } from '~/lib/utils'
+import { formatNumber, formatPrice } from '~/lib/utils'
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend)
 
 type Key = 'seriesA' | 'seriesB' | 'seriesC'
 
+const generateRandomData = (numPoints: number) => {
+  return Array.from({ length: numPoints }, () => ({
+    seriesA: Math.random() * 40_000_000,
+    seriesB: Math.random() * 40_000_000,
+    seriesC: Math.random() * 15_000_000,
+  }))
+}
+
 export default React.memo(function Chart({
-  className,
+  timeframe = '1-year',
 }: {
-  className?: string
+  timeframe: '1-week' | '1-month' | '1-year'
 }) {
-  const labels = data.map((d) => String(d.month))
+  const { labels, data } = React.useMemo(() => {
+    const now = new Date()
+    switch (timeframe) {
+      case '1-week': {
+        const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+        const labels = Array.from({ length: 7 }, (_, i) => {
+          const d = new Date()
+          d.setDate(now.getDate() - (6 - i))
+          return days[d.getDay()]
+        })
+        const data = generateRandomData(7)
+        return { labels, data }
+      }
+      case '1-month': {
+        const labels = ['Week 1', 'Week 2', 'Week 3', 'Week 4']
+        const data = generateRandomData(4)
+        return { labels, data }
+      }
+      case '1-year': {
+        const months = [
+          'Jan',
+          'Feb',
+          'Mar',
+          'Apr',
+          'May',
+          'Jun',
+          'Jul',
+          'Aug',
+          'Sep',
+          'Oct',
+          'Nov',
+          'Dec',
+        ]
+        const labels = Array.from({ length: 12 }, (_, i) => {
+          const d = new Date()
+          d.setMonth(now.getMonth() - (12 - i))
+          return months[d.getMonth()]
+        })
+        const data = generateRandomData(12)
+        return { labels, data }
+      }
+      default:
+        return { labels: [], data: [] }
+    }
+  }, [timeframe])
+
   const chartData: ChartData<'bar'> = {
     labels,
     datasets: (keys as Key[]).map((k, i) => ({
@@ -88,69 +141,8 @@ export default React.memo(function Chart({
     },
   }
 
-  return (
-    <Bar className={cn('', className)} data={chartData} options={options} />
-  )
+  return <Bar data={chartData} options={options} />
 })
 
 const keys: Key[] = ['seriesA', 'seriesB', 'seriesC']
 const colors = ['#4545FE', '#12B76A', '#F04438']
-const data = [
-  {
-    month: 'Jan',
-    seriesA: 35_000_000,
-    seriesB: 28_000_000,
-    seriesC: 9_000_000,
-  },
-  { month: 'Feb', seriesA: 5_000_000, seriesB: 28_000_000, seriesC: 9_000_000 },
-  { month: 'Mar', seriesA: 14_000_000, seriesB: 6_000_000, seriesC: 3_000_000 },
-  {
-    month: 'Apr',
-    seriesA: 14_000_000,
-    seriesB: 25_000_000,
-    seriesC: 9_000_000,
-  },
-  { month: 'May', seriesA: 9_000_000, seriesB: 1_000_000, seriesC: 8_000_000 },
-  {
-    month: 'Jun',
-    seriesA: 36_000_000,
-    seriesB: 48_000_000,
-    seriesC: 8_000_000,
-  },
-  {
-    month: 'Jul',
-    seriesA: 23_000_000,
-    seriesB: 37_000_000,
-    seriesC: 18_000_000,
-  },
-  {
-    month: 'Aug',
-    seriesA: 23_000_000,
-    seriesB: 6_000_000,
-    seriesC: 18_000_000,
-  },
-  {
-    month: 'Sep',
-    seriesA: 36_000_000,
-    seriesB: 33_000_000,
-    seriesC: 6_000_000,
-  },
-  {
-    month: 'Oct',
-    seriesA: 29_000_000,
-    seriesB: 22_000_000,
-    seriesC: 7_500_000,
-  },
-  {
-    month: 'Nov',
-    seriesA: 31_000_000,
-    seriesB: 26_000_000,
-    seriesC: 12_000_000,
-  },
-  {
-    month: 'Dec',
-    seriesA: 42_000_000,
-    seriesB: 38_000_000,
-    seriesC: 15_000_000,
-  },
-]

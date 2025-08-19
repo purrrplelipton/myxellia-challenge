@@ -68,22 +68,6 @@ function CarouselStrip({ carousels }: { carousels: CarouselDef[] }) {
         Featured carousels
       </h2>
       <div className="grid grid-cols-1 grid-rows-1 items-center *:[grid-area:1/1]">
-        {canScrollLeft && (
-          <IconButton
-            aria-label="Scroll slider left"
-            onClick={() => scrollCarousel('left')}
-            className={cn(
-              canScrollLeft
-                ? ['opacity-40 hover:opacity-100 focus-visible:opacity-100']
-                : ['opacity-0'],
-              'ml-4 grid aspect-square place-content-center justify-self-start rounded-full bg-[#e4e4e4] p-1.5 text-[0.5rem] transition-all duration-200 dark:bg-[#1b1b1b] starting:opacity-0',
-            )}
-          >
-            <span className="inline-block size-[1em] leading-none">
-              &#9664;
-            </span>
-          </IconButton>
-        )}
         <div
           ref={carouselWrapRef}
           className="flex max-w-full gap-4 overflow-auto *:shrink-0"
@@ -106,15 +90,33 @@ function CarouselStrip({ carousels }: { carousels: CarouselDef[] }) {
             )
           })}
         </div>
+        {canScrollLeft && (
+          <IconButton
+            aria-label="Scroll slider left"
+            aria-disabled={!canScrollLeft}
+            onClick={() => scrollCarousel('left')}
+            className={cn(
+              canScrollLeft
+                ? ['hover:opacity-100 focus-visible:opacity-100 lg:opacity-40']
+                : ['opacity-0'],
+              'ml-4 grid aspect-square place-content-center justify-self-start rounded-full bg-[#e4e4e4] p-1.5 text-[0.5rem] shadow shadow-current transition-all duration-200 dark:bg-[#1b1b1b] starting:opacity-0',
+            )}
+          >
+            <span className="inline-block size-[1em] leading-none">
+              &#9664;
+            </span>
+          </IconButton>
+        )}
         {canScrollRight && (
           <IconButton
             aria-label="Scroll slider right"
+            aria-disabled={!canScrollRight}
             onClick={() => scrollCarousel('right')}
             className={cn(
               canScrollRight
-                ? ['opacity-40 hover:opacity-100 focus-visible:opacity-100']
+                ? ['hover:opacity-100 focus-visible:opacity-100 lg:opacity-40']
                 : ['opacity-0'],
-              'mr-4 grid aspect-square place-content-center justify-self-end rounded-full bg-[#e4e4e4] p-1.5 text-[0.5rem] transition-all duration-200 dark:bg-[#1b1b1b] starting:opacity-0',
+              'mr-4 grid aspect-square place-content-center justify-self-end rounded-full bg-[#e4e4e4] p-1.5 text-[0.5rem] shadow shadow-current transition-all duration-200 dark:bg-[#1b1b1b] starting:opacity-0',
             )}
           >
             <span className="inline-block size-[1em] leading-none">
@@ -131,6 +133,42 @@ export default function Home() {
   const chartWrapRef = React.useRef<HTMLDivElement>(null)
   const [canChartScrollLeft, setCanChartScrollLeft] = React.useState(false)
   const [canChartScrollRight, setCanChartScrollRight] = React.useState(false)
+  const [timeframe, setTimeframe] = React.useState<
+    '1-week' | '1-month' | '1-year'
+  >('1-year')
+
+  const overviewText = React.useMemo(() => {
+    const now = new Date()
+    const start = new Date()
+    switch (timeframe) {
+      case '1-week':
+        start.setDate(now.getDate() - 7)
+        return `the last 7 days`
+      case '1-month': {
+        start.setMonth(now.getMonth() - 1)
+        const startYear = start.getFullYear()
+        const nowYear = now.getFullYear()
+        const startMonthString = start.toLocaleString('default', {
+          month: 'long',
+          year: startYear !== nowYear ? 'numeric' : undefined,
+        })
+        const nowMonthString = now.toLocaleString('default', {
+          month: 'long',
+          year: 'numeric',
+        })
+        return `${startMonthString} - ${nowMonthString}`
+      }
+      case '1-year':
+      default: {
+        start.setFullYear(now.getFullYear() - 1)
+        const options: Intl.DateTimeFormatOptions = {
+          month: 'short',
+          year: 'numeric',
+        }
+        return `${start.toLocaleString('default', options)} - ${now.toLocaleString('default', options)}`
+      }
+    }
+  }, [timeframe])
 
   const updateChartScrollState = () => {
     const el = chartWrapRef.current
@@ -169,15 +207,18 @@ export default function Home() {
           Welcome, <span>Emmanuel</span>
         </h1>
       </header>
-      <section className="mt-4 mb-5 grid grid-cols-1 gap-5 lg:grid-cols-3 2xl:grid-cols-9">
-        <div className="space-y-2.25 rounded-lg border border-[#e4e4e4] bg-white py-4 md:space-y-4.5 lg:col-span-2 lg:rounded-2xl 2xl:col-span-7 dark:border-[#1b1b1b] dark:bg-black">
+      <section className="mt-4 mb-5 grid grid-cols-1 gap-5 lg:grid-cols-3">
+        <div className="space-y-2.25 rounded-lg border border-[#e4e4e4] bg-white py-4 md:space-y-4.5 lg:col-span-2 lg:rounded-2xl dark:border-[#1b1b1b] dark:bg-black">
           <div className="mx-auto flex w-11/12 items-center text-[0.625rem] md:text-xs">
             <div className="space-y-1.5 md:space-y-3">
               <h2 className="text-base font-semibold md:text-xl">
                 Sales Overview
               </h2>
-              <p className="text-[#606060] dark:text-[#9f9f9f]">
-                Showing overview {'Jan'} {'2022'} - {'Sep'} {'2022'}
+              <p
+                className="text-[#606060] dark:text-[#9f9f9f]"
+                aria-live="polite"
+              >
+                Showing overview for {overviewText}
               </p>
             </div>
             <button
@@ -204,19 +245,27 @@ export default function Home() {
                     <input
                       type="radio"
                       name="timeframe"
-                      disabled={item.value !== '1-year'}
-                      defaultChecked={item.value === '1-year'}
                       id={item.value}
                       className="sr-only"
                       value={item.value}
+                      onChange={(e) =>
+                        setTimeframe(e.target.value as typeof timeframe)
+                      }
+                      checked={item.value === timeframe}
                     />
                     {item.name}
                   </label>
                 ))}
               </fieldset>
             </div>
-            <div className="mx-auto grid w-11/12 grid-cols-1 gap-3 lg:grid-cols-7">
-              <div className="grid grid-cols-1 grid-rows-1 items-center *:[grid-area:1/1] lg:col-span-4">
+            <div className="mx-auto grid w-11/12 grid-cols-1 gap-3 lg:grid-cols-9">
+              <div className="grid grid-cols-1 grid-rows-1 items-center *:[grid-area:1/1] lg:col-span-5">
+                <div
+                  ref={chartWrapRef}
+                  className="h-40 max-w-full overflow-auto"
+                >
+                  <Chart timeframe={timeframe} />
+                </div>
                 {canChartScrollLeft && (
                   <IconButton
                     aria-label="Scroll chart right"
@@ -225,10 +274,10 @@ export default function Home() {
                     className={cn(
                       canChartScrollLeft
                         ? [
-                            'opacity-40 hover:opacity-100 focus-visible:opacity-100',
+                            'hover:opacity-100 focus-visible:opacity-100 lg:opacity-40',
                           ]
                         : ['opacity-0'],
-                      'mr-4 grid aspect-square place-content-center justify-self-end rounded-full bg-[#e4e4e4] p-1.5 text-[0.5rem] transition-all duration-200 dark:bg-[#1b1b1b] starting:opacity-0',
+                      'mr-4 grid aspect-square place-content-center justify-self-end rounded-full bg-[#e4e4e4] p-1.5 text-[0.5rem] shadow shadow-current transition-all duration-200 dark:bg-[#1b1b1b] starting:opacity-0',
                     )}
                   >
                     <span className="inline-block size-[1em] leading-none">
@@ -236,12 +285,6 @@ export default function Home() {
                     </span>
                   </IconButton>
                 )}
-                <div
-                  ref={chartWrapRef}
-                  className="h-40 max-w-full overflow-auto"
-                >
-                  <Chart className="" />
-                </div>
                 {canChartScrollRight && (
                   <IconButton
                     aria-label="Scroll chart right"
@@ -250,10 +293,10 @@ export default function Home() {
                     className={cn(
                       canChartScrollRight
                         ? [
-                            'opacity-40 hover:opacity-100 focus-visible:opacity-100',
+                            'hover:opacity-100 focus-visible:opacity-100 lg:opacity-40',
                           ]
                         : ['opacity-0'],
-                      'mr-4 grid aspect-square place-content-center justify-self-end rounded-full bg-[#e4e4e4] p-1.5 text-[0.5rem] transition-all duration-200 dark:bg-[#1b1b1b] starting:opacity-0',
+                      'mr-4 grid aspect-square place-content-center justify-self-end rounded-full bg-[#e4e4e4] p-1.5 text-[0.5rem] shadow shadow-current transition-all duration-200 dark:bg-[#1b1b1b] starting:opacity-0',
                     )}
                   >
                     <span className="inline-block size-[1em] leading-none">
@@ -264,7 +307,7 @@ export default function Home() {
               </div>
               <div
                 className={cn(
-                  'grid grid-cols-2 gap-2 md:gap-4 lg:col-span-full lg:col-start-5',
+                  'grid grid-cols-2 gap-2 md:gap-4 lg:col-span-full lg:col-start-6',
                   '*:rounded-lg *:border *:border-[#e4e4e4] *:bg-white *:py-1.75 *:md:rounded-xl md:*:py-3.5 dark:*:border-[#1b1b1b] dark:*:bg-black',
                 )}
               >
@@ -296,7 +339,7 @@ export default function Home() {
             </div>
           </div>
         </div>
-        <div className="grid grid-cols-2 gap-2 md:gap-5 lg:col-span-full lg:col-start-3 lg:grid-cols-1 lg:grid-rows-2 2xl:col-start-8">
+        <div className="grid grid-cols-2 gap-2 md:gap-5 lg:*:col-span-2">
           <OverviewCard
             title="Listings Overview"
             titleId="listings-overview"

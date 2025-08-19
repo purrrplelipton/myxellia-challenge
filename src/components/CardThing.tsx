@@ -24,11 +24,14 @@ export default function CardThing({
   return (
     <article
       style={{ '--accent-color': accentColor } as React.CSSProperties}
-      className={cn('rounded-lg p-3', className)}
+      className={cn('rounded-lg py-3.5', className)}
       aria-labelledby={`cardthing-${title.replace(/\s+/g, '-').toLowerCase()}`}
     >
-      <div className="mx-auto w-11/12 space-y-1 text-[0.5rem] font-medium md:space-y-2 md:text-[0.625rem]">
-        <p className="font-semibold md:text-xl" aria-live="polite">
+      <div className="@container/card-thingy mx-auto w-5/6 space-y-1 text-[0.625rem] font-medium md:space-y-2 @3xs/card-thingy:text-sm">
+        <p
+          className="text-[1.5em] font-semibold @3xs/card-thingy:text-[2.5em] @2xs/card-thingy:text-[3em]"
+          aria-live="polite"
+        >
           <span className="text-(--accent-color) dark:invert" aria-hidden>
             {formatPrice(value)}
           </span>
@@ -44,11 +47,12 @@ export default function CardThing({
           </span>
 
           <ArrowThingy
+            aria-hidden
             className={cn(
-              'mr-0.75 ml-1 inline-block w-[1em] text-[0.625rem] text-(--accent-color) md:mr-1.5 md:ml-2 md:text-sm dark:invert',
+              'mr-0.75 ml-1 inline-block w-[1.125em] align-middle text-(--accent-color) md:mr-1.5 md:ml-2 dark:invert',
               {
                 'rotate-180': !isIncrease && !isSame,
-                'rounded-full bg-(--accent)': isSame,
+                'rounded-full bg-(--accent-color)': isSame,
               },
             )}
           />

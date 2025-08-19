@@ -425,6 +425,7 @@ export default function Tooltip({
             </div>
 
             <style>{`
+              @media (hover: none) { .__tooltip__root { display: none; } }
               /* top: tooltip above anchor => arrow points down */
               [data-placement="top"] .__tooltip__arrow { clip-path: polygon(50% 100%, 0 0, 100% 0); bottom: -${Math.round(arrow.block / 2)}px; }
               /* bottom: tooltip below anchor => arrow points up */
