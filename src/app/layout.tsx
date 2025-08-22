@@ -2,6 +2,7 @@ import { euclidCircularB } from '~/lib/fonts'
 import type { Metadata } from 'next'
 import './globals.css'
 import Header from '~/components/Header'
+import { Analytics } from '@vercel/analytics/next'
 
 export const metadata: Metadata = {
   title: 'Myxellia',
@@ -19,6 +20,7 @@ export default function RootLayout({
         <Header />
         <main className="pt-3 pb-7 *:mx-auto *:w-11/12 *:max-w-screen-2xl">
           {children}
+          <Analytics />
         </main>
       </body>
     </html>
